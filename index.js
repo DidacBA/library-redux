@@ -2,7 +2,7 @@
   type: 'ADD_TODO',
   todo: {
     id: 0,
-    name 'Learn Redux',
+    name: 'Learn Redux',
     complete: false,
   }
 }
@@ -32,6 +32,8 @@
   3) Never produce any side effects
 */
 
+
+// Reducer function
 function todos (state = [], action) {
   if (action.type === 'ADD_TODO') {
     return state.concat([action.todo])
@@ -40,7 +42,7 @@ function todos (state = [], action) {
   return state
 }
 
-function createStore () {
+function createStore (reducer) {
   // the store should have four parts
   // 1. The state
   // 2. Get the state
@@ -58,9 +60,26 @@ function createStore () {
       listeners = listeners.filter((l) => l !== listener)
     }
   }
+
+  const dispatch = (action) => {
+    state = reducer(state, action)
+    listeners.forEach((listener) => listener())
+    // loop over listeners and invoke them
+  }
   
   return {
     getState,
     subscribe,
+    dispatch,
   }
 }
+
+const store = createStore(todos);
+store.dispatch({
+  type: 'ADD_TODO',
+  todo: {
+    id: 0,
+    name:'Learn Redux',
+    complete: false,
+  }
+})
